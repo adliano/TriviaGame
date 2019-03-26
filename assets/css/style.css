@@ -1,0 +1,15 @@
+
+/* font-family: 'Baloo Chettan', cursive; */
+/* font-family: 'Luckiest Guy', cursive; */
+/* font-family: 'Special Elite', cursive; */
+
+body{
+    background-image: url("../images/background.jpg");
+    font-family: 'Luckiest Guy', cursive;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+#triviaHeader{
+    font-family: 'Baloo Chettan', cursive;
+}
