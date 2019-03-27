@@ -1,14 +1,10 @@
 // <!-- Geography -->
 // <!-- https://opentdb.com/api.php?amount=10&category=22&difficulty=easy&type=multiple -->
+var questionsObject;
+let url = `https://opentdb.com/api.php?amount=10&category=22&difficulty=easy&type=multiple`;
 
 
-window.onload = function () {
-
-    let amount = 10;
-    let url = `https://opentdb.com/api.php?amount=10&category=22&difficulty=easy&type=multiple`;
-    var questionsObject;
-
-    fetch(url)
+fetch(url)
     .then((response) => response.json())
     .then((myJson) => {
         // console.dir(myJson);
@@ -16,27 +12,15 @@ window.onload = function () {
         
         
     })
-    .then(() => console.log(questionsObject));
-
-    console.log(questionsObject);
+    .then(() => updateView());
 
 
-/*  
-// Pass the path to the resource you want to fetch                           
- 25     fetch(queryURL)                                                              
- 26     .then((response) => response.json()) // then do something with the response (Promise)
- 27     .then((myJson) => console.log(JSON.stringify(myJson)));
-*/
-
-
-
-    console.table(questionsObject);
-    
+// window.onload = function () {    
     
     var intervalID;
     var timerCounter = 30; // 30 seconds
     // Array with Questions keys
-    let questionsKeys = Object.keys(questions);
+   // let questionsKeys = Object.keys(questions);
     // JSON with current question info
     
 
@@ -94,5 +78,34 @@ window.onload = function () {
 
     startTimer();
 
+    // Get all Buttons under btnColumn id
+    let questionButtons = document.querySelector("#btnColumn").children
+    // Set onclick event listner for each
+    for(let _btn of questionButtons){
+        _btn.addEventListener("click", function(event){
+            let _btnText = event.target.innerHTML;
+            /////////// DEBUGGING \\\\\\\\\\\
+            console.log(_btnText);
+            console.dir(questionsObject);
+            console.log(questionsObject.results[0].question);
+            
+        });
+    }
 
-} // END of window.onload
+    function updateView(){
+        // Get randon index from questionsObject using splice to void erpetitive questions
+        let _question = questionsObject.results[0].question;
+        // Get Element that will display the question
+        let _questionElement = document.querySelector("#question");
+        // Set the question
+        _questionElement.innerHTML = _question;
+        // Random place correct answer and incorrect on the buttons
+
+    }
+
+
+
+
+
+
+//} // END of window.onload

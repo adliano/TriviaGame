@@ -10,6 +10,14 @@ body{
     background-size: cover;
 }
 
+ button {
+    font-family: 'Baloo Chettan', cursive;
+ }
+
+h3 {
+    font-family: 'Baloo Chettan', cursive;
+}
+
 #triviaHeader{
     font-family: 'Baloo Chettan', cursive;
 }
