@@ -79,20 +79,6 @@ questions = {
 }
 /**
 
-34. When did the Second World War end? (1945)
-
-35. What are the first three words of the bible? (In the beginning)
-
-36. How many children has Queen Elizabeth the Second got? (4)
-
-37. What’s the real name of Siddartha Gautama? (Buddha)
-
-38. What’s the name of the famous big clock in London? (Big Ben)
-
-39. Where was Christopher Columbus born? (Genoa)
-
-40. When did the American Civil War end? (1865)
-
 41. What did the 7 dwarves do for a job? (miners)
 
 42. Who painted the Sistine Chapel? (Michelangelo)

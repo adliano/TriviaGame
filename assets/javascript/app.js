@@ -1,13 +1,73 @@
+// <!-- Geography -->
+// <!-- https://opentdb.com/api.php?amount=10&category=22&difficulty=easy&type=multiple -->
+
+
 window.onload = function () {
+
+    let amount = 10;
+    let url = `https://opentdb.com/api.php?amount=10&category=22&difficulty=easy&type=multiple`;
+    var questionsObject;
+
+    fetch(url)
+    .then((response) => response.json())
+    .then((myJson) => {
+        // console.dir(myJson);
+        questionsObject = myJson;
+        
+        
+    })
+    .then(() => console.log(questionsObject));
+
+    console.log(questionsObject);
+
+
+/*  
+// Pass the path to the resource you want to fetch                           
+ 25     fetch(queryURL)                                                              
+ 26     .then((response) => response.json()) // then do something with the response (Promise)
+ 27     .then((myJson) => console.log(JSON.stringify(myJson)));
+*/
+
+
+
+    console.table(questionsObject);
+    
+    
     var intervalID;
-    var timerCounter = 30;// 30 seconds
-    /* ******************************* */
-    function startTimer(){
-        clearInterval(intervalID);
-        intervalID = setInterval(updateTimer,1000);
+    var timerCounter = 30; // 30 seconds
+    // Array with Questions keys
+    let questionsKeys = Object.keys(questions);
+    // JSON with current question info
+    
+
+
+    // musicKeys = Object.keys(musics);
+    // variable used to hold JSON with info about selected music
+    //  let currentMusicKey = musicKeys.splice(rand(0, musicKeys.length - 1), 1);
+    // get object with info for the current music
+    //  musicObject = musics[currentMusicKey[0]];
+
+
+
+    /******************************************************************************/
+    /* * * * * * * * * * * * * * * * * * rand() * * * * * * * * * * * * * * * * * */
+    /******************************************************************************/
+    // Function that generate random number
+    // this will return a number beteween the provided range
+    // Math.random() return number between 0 (inclusive) and 1 (exclusive)
+    // in this case, The maximum is inclusive and the minimum is inclusive
+    function rand(min, max) {
+        min = Math.ceil(min);
+        max = Math.floor(max);
+        return Math.floor(Math.random() * (max - min + 1)) + min;
     }
     /* ******************************* */
-    function updateTimer(){
+    function startTimer() {
+        clearInterval(intervalID);
+        intervalID = setInterval(updateTimer, 1000);
+    }
+    /* ******************************* */
+    function updateTimer() {
         // Update Counter
         timerCounter--;
         // Set Counter to always show two digits
@@ -15,21 +75,24 @@ window.onload = function () {
         // Display Updated conter
         document.querySelector("#timerID").innerHTML = timerCounter;
         // Stop if counter reachs zero
-        if(timerCounter == 0){
-             stop()
+        if (timerCounter == 0) {
+            stop()
         }
         // Make it red color if counter bellow 10
-        else if(timerCounter < 11){
+        else if (timerCounter < 11) {
             document.querySelector("#timerID").classList.add("text-danger");
         }
     }
     /* ******************************** */
-    function stop(){
+    function stop() {
         clearInterval(intervalID);
     }
 
+    //console.log(Object.keys(questions));
+
+    // musicKeys = Object.keys(musics)
 
     startTimer();
-    
-    
-}// END of window.onload
+
+
+} // END of window.onload
