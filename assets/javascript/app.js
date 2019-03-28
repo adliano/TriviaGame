@@ -3,40 +3,36 @@
 let questionsObjects;
 let questionsKeys;
 let correctAnswer;
-
-let url = `https://opentdb.com/api.php?amount=10&category=22&difficulty=easy&type=multiple`;
-// Get questions from API using promisses
-fetch(url)
-    .then((response) => response.json())
-    .then((myJson) => {
-        // Save the object
-        questionsObjects = myJson.results;
-        ///////// DEBUG \\\\\\\\\
-        console.log(questionsObjects);
-        //
-        // Array with Questions keys
-        questionsKeys = Object.keys(questionsObjects);
-        //
-        ///////// DEBUG \\\\\\\\\
-        //console.log(questionsKeys);
-    })
-    // Update view after data arrive
-    .then(() => updateView());
-
 // Save interval ID to be able to stop when need it
 var intervalID;
 // Time given to user to answer 30 seconds
 var timerCounter = 30;
+//
+/******************************************************************************/
+/* * * * * * * * * * * * * * * * getQuestions() * * * * * * * * * * * * * * * */
+/******************************************************************************/
+function getQuestions(difficulty) {
+    let url = `https://opentdb.com/api.php?amount=10&category=22&difficulty=${difficulty}&type=multiple`;
+    // Get questions from API using promisses
+    fetch(url)
+        .then((response) => response.json())
+        .then((myJson) => {
+            // Save the object
+            questionsObjects = myJson.results;
+            ///////// DEBUG \\\\\\\\\
+            console.log(questionsObjects);
+            //
+            // Array with Questions keys
+            questionsKeys = Object.keys(questionsObjects);
+            //
+            ///////// DEBUG \\\\\\\\\
+            //console.log(questionsKeys);
+        })
+        // Update view after data arrive
+        .then(() => updateView());
+}
 
-
-
-
-// variable used to hold JSON with info about selected music
-//  let currentMusicKey = musicKeys.splice(rand(0, musicKeys.length - 1), 1);
-// get object with info for the current music
-//  musicObject = musics[currentMusicKey[0]];
-
-
+getQuestions("easy");
 
 /******************************************************************************/
 /* * * * * * * * * * * * * * * * * * rand() * * * * * * * * * * * * * * * * * */
@@ -47,15 +43,17 @@ function rand(range) {
     range = Math.floor(range);
     return Math.floor(Math.random() * range);
 }
-/* ******************************* */
+/******************************************************************************/
+/* * * * * * * * * * * * * * * * startTimer() * * * * * * * * * * * * * * * * */
+/******************************************************************************/
 function startTimer() {
     clearInterval(intervalID);
     intervalID = setInterval(updateTimer, 1000);
 }
-/* ******************************* */
+/*******************************************************************************/
+/* * * * * * * * * * * * * * * * updateTimer() * * * * * * * * * * * * * * * * */
+/*******************************************************************************/
 function updateTimer() {
-    // Update Counter
-    timerCounter--;
     // Set Counter to always show two digits
     timerCounter = ("0" + timerCounter).slice(-2);
     // Display Updated conter
@@ -68,17 +66,16 @@ function updateTimer() {
     else if (timerCounter < 11) {
         document.querySelector("#timerID").classList.add("text-danger");
     }
+    // Update Counter
+    timerCounter--;
 }
-/* ******************************** */
+/****************************************************************************/
+/* * * * * * * * * * * * * * * * * stop() * * * * * * * * * * * * * * * * * */
+/****************************************************************************/
 function stop() {
     clearInterval(intervalID);
+    
 }
-
-//console.log(Object.keys(questions));
-
-// musicKeys = Object.keys(musics)
-
-startTimer();
 
 // Get all Buttons under btnColumn id
 let questionButtons = document.querySelector("#btnColumn").children
@@ -100,10 +97,13 @@ for (let _btn of questionButtons) {
 // this function will return the correct_answer 
 // to compare with user answer
 function updateView() {
+    // stop();
+    // startTimer();
+    // timerCounter = 30;
     // Get a rand key ussing splice 
     // splice return a Array 
     let _key = questionsKeys.splice(rand(questionsKeys.length), 1);
-    // Debugging
+    ///////// DEBUG \\\\\\\\\
     console.log(`%c current key : ${_key[0]}`, 'background-color: red;');
     //
     // Get randon object from questionsObjects using splice to void erpetitive questions
@@ -124,6 +124,12 @@ function updateView() {
         let _question = _obj.incorrect_answers.splice(rand(_obj.incorrect_answers.length), 1)[0];
         _btn.innerHTML = _question;
     }
+
+    stop();
+    timerCounter = 30;
+    startTimer();
+    
+    
 
     // console.log(`%c Key : ${_incorrectAnswersKeys[rand(_incorrectAnswersKeys.length)]}`, `background-color:yellow; color:blue;`);
 
