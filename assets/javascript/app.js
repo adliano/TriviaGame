@@ -2,6 +2,7 @@
 
 let questionsObjects;
 let questionsKeys;
+let correctAnswer;
 
 let url = `https://opentdb.com/api.php?amount=10&category=22&difficulty=easy&type=multiple`;
 // Get questions from API using promisses
@@ -10,23 +11,14 @@ fetch(url)
     .then((myJson) => {
         // Save the object
         questionsObjects = myJson.results;
-
-
-
-
+        ///////// DEBUG \\\\\\\\\
         console.log(questionsObjects);
-
-
-
-
-
+        //
         // Array with Questions keys
         questionsKeys = Object.keys(questionsObjects);
-
-
-
-        console.log(questionsKeys);
-        
+        //
+        ///////// DEBUG \\\\\\\\\
+        //console.log(questionsKeys);
     })
     // Update view after data arrive
     .then(() => updateView());
@@ -105,12 +97,14 @@ for (let _btn of questionButtons) {
 /* * * * * * * * * * updateView() * * * * * * * * */
 /* ********************************************** */
 // Fubction used to update view with new question
+// this function will return the correct_answer 
+// to compare with user answer
 function updateView() {
     // Get a rand key ussing splice 
     // splice return a Array 
     let _key = questionsKeys.splice(rand(questionsKeys.length), 1);
     // Debugging
-    console.log(`%c current key : ${_key[0]}`,'background-color: red;');
+    console.log(`%c current key : ${_key[0]}`, 'background-color: red;');
     //
     // Get randon object from questionsObjects using splice to void erpetitive questions
     let _obj = questionsObjects[_key[0]];
@@ -120,28 +114,19 @@ function updateView() {
     let _questionElement = document.querySelector("#question");
     // Set the question
     _questionElement.innerHTML = _question;
-    // Random place correct answer and incorrect on the buttons
-    // Get Array with incorrect_answers
-    let _incorrectAnswers = _obj.incorrect_answers;
     // Get the correct_answer (it will be the return of this function)
-    let _correctAnswer = _obj.correct_answer;
-    // Add correct_answer to incorrect_answers array
-    _incorrectAnswers.push(_correctAnswer);
+    correctAnswer = _obj.correct_answer;
+    // Add correct_answer to incorrect_answers array to shuffle
+    _obj.incorrect_answers.push(correctAnswer);
     //
-    // Debugging
-    //
-    for(let _btn of questionButtons){
-        _btn.innerHTML = _incorrectAnswers.slice(rand(_incorrectAnswers.length),1)[0];
+    // Random place correct and incorrect answer on the buttons
+    for (let _btn of questionButtons) {
+        let _question = _obj.incorrect_answers.splice(rand(_obj.incorrect_answers.length), 1)[0];
+        _btn.innerHTML = _question;
     }
-    // console.log(`%c_incorrectAnswers : ${_incorrectAnswers}`,`background-color:blue; color:white;`);
 
-    return _correctAnswer;
+    // console.log(`%c Key : ${_incorrectAnswersKeys[rand(_incorrectAnswersKeys.length)]}`, `background-color:yellow; color:blue;`);
 
 }
 
-
-
-
-
-
-//} // END of window.onload
+document.querySelector("#update").addEventListener("click", updateView);

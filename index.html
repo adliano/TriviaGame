@@ -1,9 +1,8 @@
 <!doctype html>
 <!-- https://www.youtube.com/watch?v=xhmmiRmxQ8Q&feature=youtu.be -->
-
+<!-- API Used -->
 <!-- Geography -->
 <!-- https://opentdb.com/api.php?amount=10&category=22&difficulty=easy&type=multiple -->
-
 <html lang="en">
   <head>
     <title>Trivia Game</title>
@@ -19,10 +18,9 @@
     <!-- Javascript
     <script src="./assets/javascript/app.js"></script>
     <script src="./assets/javascript/questions.js"></script> -->
-
   </head>
   <body>
-          <div class="container align-middle bg-warning text-center my-5">
+          <div class="container align-middle text-center my-5">
               <h1 id="triviaHeader" class="font-weight-bolder text-primary my-5 py-5">Totally Trivial Trivia</h1>
               
               <h2 class="my-5">Time Remaining : <span id="timerID" class="w-100 m-1">30</span> Seconds</h2>
@@ -37,11 +35,13 @@
                       <button class="btn btn-outline-dark w-100 m-1">option two</button>
                       <button class="btn btn-outline-dark w-100 m-1">option three</button>
                       <button class="btn btn-outline-dark w-100 m-1">option four</button>
-    
                   </div>
     
                   <div class="col-lg-3"></div>
 
+              </div>
+              <div class="row text-center">
+                <button id="update" class="btn btn-primary mx-auto my-5">Update</button>
               </div>
               
               
