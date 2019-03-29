@@ -7,6 +7,10 @@ let correctAnswer;
 var intervalID;
 // Time given to user to answer 30 seconds
 var timerCounter = 30;
+
+let gameInfo = {toatlWin : 0, totalLost : 0 , totalRounds : 0};
+
+
 //
 /******************************************************************************/
 /* * * * * * * * * * * * * * * * getQuestions() * * * * * * * * * * * * * * * */
@@ -28,11 +32,32 @@ function getQuestions(difficulty) {
             ///////// DEBUG \\\\\\\\\
             //console.log(questionsKeys);
         })
+        // Enable Start Button after data ia loaded
+        .then(() => noName())
         // Update view after data arrive
         .then(() => updateView());
 }
 
 getQuestions("easy");
+
+
+/******************************************************************************/
+/* * * * * * * * * * * * * * * * * noName() * * * * * * * * * * * * * * * * * */
+/******************************************************************************/
+// TODO: Name this function later
+function noName(){
+    // Get start button element 
+    let _btn = document.querySelector("#startButton");
+    // Enable the start button
+    _btn.disabled = false;
+    // Add the event listner
+    _btn.addEventListener("click", function(){
+        // remove Start button from view 
+        document.querySelector("#containerStart").classList.add("invisible");
+        // Add the Question container on view
+        document.querySelector("#questionsContainer").classList.remove("invisible");
+    });
+}
 
 /******************************************************************************/
 /* * * * * * * * * * * * * * * * * * rand() * * * * * * * * * * * * * * * * * */
@@ -77,19 +102,49 @@ function stop() {
     
 }
 
+/***************************************************************************/
+/* * * * * * * * * * * * * * onAnswerClick() * * * * * * * * * * * * * * * */
+/***************************************************************************/
+// Method to handle event wen user click in any answer
+function onAnswerClick(event){
+    event.preventDefault(); 
+    let _btnText = event.target.innerHTML;
+    ///////// DEBUG \\\\\\\\\\
+    console.log(_btnText);
+
+    if(_btnText == correctAnswer){
+        console.log(`You got it! ${_btnText} id rith answer`);
+        gameInfo.toatlWin++;
+        console.log(`Total Guessed : ${gameInfo.toatlWin}`);
+        
+    }
+    else{
+        console.log(`Wrong!`);
+        gameInfo.totalLost++;
+        console.log(`Total missed : ${gameInfo.totalLost}`);
+        
+    }
+}
+
+
+document.querySelector("#btnColumn").addEventListener("click", onAnswerClick);//{
+
+
 // Get all Buttons under btnColumn id
 let questionButtons = document.querySelector("#btnColumn").children
 // Set onclick event listner for each
-for (let _btn of questionButtons) {
-    _btn.addEventListener("click", function (event) {
-        let _btnText = event.target.innerHTML;
+// for (let _btn of questionButtons) {
+    // _btn.addEventListener("click", function (event) {
+        // let _btnText = event.target.innerHTML;
         /////////// DEBUGGING \\\\\\\\\\\
-        console.log(_btnText);
-        console.dir(questionsObjects);
-        console.log(questionsObjects.results[0].question);
+        // console.log(_btnText);
+        // console.dir(questionsObjects);
+        // console.log(questionsObjects.results[0].question);
 
-    });
-}
+    // });
+// }
+
+
 /* ********************************************** */
 /* * * * * * * * * * updateView() * * * * * * * * */
 /* ********************************************** */
@@ -128,11 +183,9 @@ function updateView() {
     stop();
     timerCounter = 30;
     startTimer();
-    
-    
 
     // console.log(`%c Key : ${_incorrectAnswersKeys[rand(_incorrectAnswersKeys.length)]}`, `background-color:yellow; color:blue;`);
 
 }
-
+// Button use to debug \\
 document.querySelector("#update").addEventListener("click", updateView);

@@ -4,58 +4,79 @@
 <!-- Geography -->
 <!-- https://opentdb.com/api.php?amount=10&category=22&difficulty=easy&type=multiple -->
 <html lang="en">
-  <head>
-    <title>Trivia Game</title>
-    <!-- Required meta tags -->
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css?family=Baloo+Chettan|Luckiest+Guy|Special+Elite" rel="stylesheet">
-    <!-- Style.css -->
-    <link rel="stylesheet" href="./assets/css/style.css">
-    <!-- Javascript
+
+<head>
+  <title>Trivia Game</title>
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+    integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css?family=Baloo+Chettan|Luckiest+Guy|Special+Elite" rel="stylesheet">
+  <!-- Style.css -->
+  <link rel="stylesheet" href="./assets/css/style.css">
+  <!-- Javascript
     <script src="./assets/javascript/app.js"></script>
     <script src="./assets/javascript/questions.js"></script> -->
-  </head>
-  <body>
-          <div class="container align-middle text-center my-5">
-              <h1 id="triviaHeader" class="font-weight-bolder text-primary my-5 py-5">Totally Trivial Trivia</h1>
-              
-              <h2 class="my-5">Time Remaining : <span id="timerID" class="w-100 m-1">30</span> Seconds</h2>
+</head>
 
-              <h3 id="question">My Question Here</h3>
+<body>
+  <div id="containerStart" class="container my-5">
+    <!-- TODO: Center Button -->
+    <div class="row">
+      <div class="col  text-center">
+        <div class="h-100"></div>
+        <!-- Button Disable by default and it will become enable after data is loaded  -->
+        <button id="startButton" class="btn btn-outline-primary px-5 h-100" disabled>Start</button>
+        <div class="h-100"></div>
+      </div>
 
-              <div class="row">
-                  <div class="col-lg-3"></div>
+    </div>
 
-                  <div id="btnColumn" class="col-lg-6">
-                      <button class="btn btn-outline-dark w-100 m-1">option one</button>
-                      <button class="btn btn-outline-dark w-100 m-1">option two</button>
-                      <button class="btn btn-outline-dark w-100 m-1">option three</button>
-                      <button class="btn btn-outline-dark w-100 m-1">option four</button>
-                  </div>
-    
-                  <div class="col-lg-3"></div>
+  </div>
 
-              </div>
-              <div class="row text-center">
-                <button id="update" class="btn btn-primary mx-auto my-5">Update</button>
-              </div>
-              
-              
-          </div>
-      
-    <!-- Optional JavaScript -->
-    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-    <!-- <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+  <!-- ------------------------------------------------- -->
+  <!-- Container with questions and answer Buttons       -->
+  <!-- ------------------------------------------------- -->
+  <div id="questionsContainer" class="container align-middle text-center my-5 invisible">
+    <h1 id="triviaHeader" class="font-weight-bolder text-primary my-5 py-5">Totally Trivial Trivia</h1>
+
+    <h2 class="my-5">Time Remaining : <span id="timerID" class="w-100 m-1">30</span> Seconds</h2>
+
+    <h3 id="question">My Question Here</h3>
+
+    <div class="row">
+      <div class="col-lg-3"></div>
+
+      <div id="btnColumn" class="col-lg-6">
+        <button class="btn btn-outline-dark w-100 m-1">option one</button>
+        <button class="btn btn-outline-dark w-100 m-1">option two</button>
+        <button class="btn btn-outline-dark w-100 m-1">option three</button>
+        <button class="btn btn-outline-dark w-100 m-1">option four</button>
+      </div>
+
+      <div class="col-lg-3"></div>
+
+    </div>
+    <div class="row text-center">
+      <button id="update" class="btn btn-primary mx-auto my-5">Update</button>
+    </div>
+
+
+  </div>
+
+  <!-- Optional JavaScript -->
+  <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+  <!-- <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script> -->
 
 
-    <!-- Javascript -->
-    <script src="./assets/javascript/app.js"></script>
-    <script src="./assets/javascript/questions.js"></script>
-  </body>
+  <!-- Javascript -->
+  <script src="./assets/javascript/app.js"></script>
+  <script src="./assets/javascript/questions.js"></script>
+</body>
+
 </html>

@@ -23,10 +23,30 @@ h3 {
     font-size: 5rem;
 }
 
+#containerStart {
+    min-height: 250px;
+    min-width: 250px;
+     
+
+}
+
+/* #startButton::before{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-right: -50%;
+    transform: translate(-50%, -50%);
+    margin: 0;
+} */
+
 .btn {
     font-size: 2rem;
 }
 
 .container {
     background-color:rgba(255,255, 0, 0.75);
+}
+
+.invisible{
+    display: none;
 }
