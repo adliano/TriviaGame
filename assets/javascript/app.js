@@ -48,6 +48,10 @@ function getCorrectAnswerGIF(search) {
             correctAnswerGifURL = jsonObj.data.images.original.url;
             console.log(correctAnswerGifURL);
 
+        })
+        .catch((errmsg) => {
+            correctAnswerGifURL = "https://media.giphy.com/media/Ax0kmy0IEqq9W/giphy.gif";
+            console.log(errmsg);
         });
 }
 /*****************************************************************************/
@@ -60,6 +64,10 @@ function getWrongAnswerGIF() {
         .then((jsonObj) => {
             wrongAnswerGifURL = jsonObj.data.images.original.url;
             console.log(wrongAnswerGifURL);
+        })
+        .catch((errmsg) => {
+            correctAnswerGifURL = "https://media.giphy.com/media/BPZenX37AtXyw/giphy.gif";
+            console.log(errmsg);  
         });
 }
 /******************************************************************************/
@@ -114,7 +122,6 @@ function rand(range) {
 /* * * * * * * * * * * * * * * * startTimer() * * * * * * * * * * * * * * * * */
 /******************************************************************************/
 function startTimer() {
-    document.querySelector("#timerID").classList.remove("text-danger");
     clearInterval(intervalID);
     intervalID = setInterval(updateTimer, 1000);
 }
@@ -129,6 +136,7 @@ function updateTimer() {
     // Stop if counter reachs zero
     if (timerCounter == 0) {
         stop()
+        document.querySelector("#timerID").classList.remove("text-danger");
     }
     // Make it red color if counter bellow 10
     else if (timerCounter < 11) {
