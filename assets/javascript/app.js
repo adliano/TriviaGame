@@ -9,9 +9,8 @@ let correctAnswer;
 var intervalID;
 // Time given to user to answer 30 seconds
 var timerCounter = 30;
-
+//
 let gameInfo = { toatlWin: 0, totalLost: 0, totalRounds: 0 };
-
 //
 /******************************************************************************/
 /* * * * * * * * * * * * * * * * getQuestions() * * * * * * * * * * * * * * * */
@@ -35,9 +34,9 @@ function getQuestions(difficulty) {
         // Update view after data arrive
         .then(() => updateView());
 }
-
+//
 getQuestions("easy");
-
+//
 /*****************************************************************************/
 /* * * * * * * * * * * * * * getCorrectAnswerGIF() * * * * * * * * * * * * * */
 /*****************************************************************************/
@@ -61,7 +60,6 @@ function getWrongAnswerGIF() {
         .then((jsonObj) => {
             wrongAnswerGifURL = jsonObj.data.images.original.url;
             console.log(wrongAnswerGifURL);
-
         });
 }
 /******************************************************************************/
@@ -76,9 +74,9 @@ function noName() {
     // Add the event listner
     _btn.addEventListener("click", function () {
         // remove Start button from view 
-        document.querySelector("#containerStart").classList.add("invisible");
+        mkInvisible("#containerStart");
         // Add the Question container on view
-        document.querySelector("#questionsContainer").classList.remove("invisible");
+        mkVisible("#questionsContainer");
     });
 }
 /*****************************************************************************/
@@ -97,6 +95,12 @@ function mkInvisible(...selectors) {
         document.querySelector(selector).classList.add("invisible");
     }
 }
+/*******************************************************************************/
+/* * * * * * * * * * * * * * * * * setText() * * * * * * * * * * * * * * * * * */
+/*******************************************************************************/
+function setText(selector, text){
+    document.querySelector(selector).innerHTML = text;
+}
 /******************************************************************************/
 /* * * * * * * * * * * * * * * * * * rand() * * * * * * * * * * * * * * * * * */
 /******************************************************************************/
@@ -110,6 +114,7 @@ function rand(range) {
 /* * * * * * * * * * * * * * * * startTimer() * * * * * * * * * * * * * * * * */
 /******************************************************************************/
 function startTimer() {
+    document.querySelector("#timerID").classList.remove("text-danger");
     clearInterval(intervalID);
     intervalID = setInterval(updateTimer, 1000);
 }
@@ -120,7 +125,7 @@ function updateTimer() {
     // Set Counter to always show two digits
     timerCounter = ("0" + timerCounter).slice(-2);
     // Display Updated conter
-    document.querySelector("#timerID").innerHTML = timerCounter;
+    setText("#timerID",timerCounter);
     // Stop if counter reachs zero
     if (timerCounter == 0) {
         stop()
@@ -131,64 +136,65 @@ function updateTimer() {
     }
     // Update Counter
     timerCounter--;
+    // TODO: check if timer == 0 
+    // TODO: update noAnswered
+    // TODO: reset view 
 }
 /****************************************************************************/
 /* * * * * * * * * * * * * * * * * stop() * * * * * * * * * * * * * * * * * */
 /****************************************************************************/
 function stop() {
     clearInterval(intervalID);
-
 }
-
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 /* * * * * * * * * * * * * * onAnswerClick() * * * * * * * * * * * * * * * */
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 // Method to handle event wen user click in any answer
 function onAnswerClick(event) {
     event.preventDefault();
+    // stop current interval
+    clearInterval(intervalID);
+    // get interval ID
+    intervalID = setInterval(updateView, 1000 * 5);
+    // Get text from clicked button
     let _btnText = event.target.innerHTML;
-    ///////// DEBUG \\\\\\\\\\
-    console.log(_btnText);
-
-    mkInvisible("#timerHearder","#question","#btnColumn");
+    // remove timerHearder, question and btnColumn from view
+    mkInvisible("#timerHearder", "#btnColumn");
+    //display displayGIF
     mkVisible("#displayGIF");
+    // Get Element image
     let _imgElement = document.querySelector("#displayGIF").children[0];
+    // Variable to hold the src url
     let _src;
-
+    // Variable to hold answer status
+    let _answerStatus;
+    // If correct answer
     if (_btnText == correctAnswer) {
-        console.log(`You got it! ${_btnText} id rith answer`);
+        // Update toatlWin
         gameInfo.toatlWin++;
-        console.log(`Total Guessed : ${gameInfo.toatlWin}`);
+        // set url
         _src = correctAnswerGifURL;
+        // Set answer status to correct
+        _answerStatus = "You Got it!";
     }
+    // If wrong answer
     else {
-        console.log(`Wrong!`);
+        // update totalLost
         gameInfo.totalLost++;
-        console.log(`Total missed : ${gameInfo.totalLost}`);
-        _src =wrongAnswerGifURL;
+        //set url
+        _src = wrongAnswerGifURL;
+        // Set answer status to wrong
+        _answerStatus = "Nope!";
     }
-    _imgElement.setAttribute("src",_src);
+    // set text for answer status
+    setText("#question",_answerStatus);
+    // add the src to img
+    _imgElement.setAttribute("src", _src);
 }
-
-
-document.querySelector("#btnColumn").addEventListener("click", onAnswerClick);//{
-
-
-// Get all Buttons under btnColumn id
-let questionButtons = document.querySelector("#btnColumn").children
-// Set onclick event listner for each
-// for (let _btn of questionButtons) {
-// _btn.addEventListener("click", function (event) {
-// let _btnText = event.target.innerHTML;
-/////////// DEBUGGING \\\\\\\\\\\
-// console.log(_btnText);
-// console.dir(questionsObjects);
-// console.log(questionsObjects.results[0].question);
-
-// });
-// }
-
-
+//
+// Add the onclick listener to answers buttons
+document.querySelector("#btnColumn").addEventListener("click", onAnswerClick);
+//
 /* ********************************************** */
 /* * * * * * * * * * updateView() * * * * * * * * */
 /* ********************************************** */
@@ -196,11 +202,7 @@ let questionButtons = document.querySelector("#btnColumn").children
 // this function will return the correct_answer 
 // to compare with user answer
 function updateView() {
-    // stop();
-    // startTimer();
-    // timerCounter = 30;
-    // Get a rand key ussing splice 
-    // splice return a Array 
+    // Get a rand key ussing splice (splice return a Array)
     let _key = questionsKeys.splice(rand(questionsKeys.length), 1);
     ///////// DEBUG \\\\\\\\\
     console.log(`%c current key : ${_key[0]}`, 'background-color: red;');
@@ -209,32 +211,33 @@ function updateView() {
     let _obj = questionsObjects[_key[0]];
     // Get string question
     let _question = _obj.question;
-    // Get Element that will display the question
-    let _questionElement = document.querySelector("#question");
     // Set the question
-    _questionElement.innerHTML = _question;
+    setText("#question", _question);
     // Get the correct_answer (it will be the return of this function)
     correctAnswer = _obj.correct_answer;
     // Add correct_answer to incorrect_answers array to shuffle
     _obj.incorrect_answers.push(correctAnswer);
-    //
+    // Get all answer buttons
+    let _questionButtons = document.querySelector("#btnColumn").children
     // Random place correct and incorrect answer on the buttons
-    for (let _btn of questionButtons) {
+    for (let _btn of _questionButtons) {
         let _question = _obj.incorrect_answers.splice(rand(_obj.incorrect_answers.length), 1)[0];
         _btn.innerHTML = _question;
     }
-
-    ////////////////////////////////////////////////////////////////////////////////
+    // Get Correct answer gif url
     getCorrectAnswerGIF(`right answer ${correctAnswer}`);
+    // Get wronganswer git url
     getWrongAnswerGIF();
-    /////////////////////////////////////////////////////////////////////////////////////
-
+    // remove gif animation displayGIF
+    mkInvisible("#displayGIF");
+    // display timerHearder, question and btnColumn
+    mkVisible("#timerHearder", "#question", "#btnColumn");
+    // Stop timer
     stop();
+    // Reset counter
     timerCounter = 30;
+    //Start timer
     startTimer();
-
-    // console.log(`%c Key : ${_incorrectAnswersKeys[rand(_incorrectAnswersKeys.length)]}`, `background-color:yellow; color:blue;`);
-
 }
 // Button use to debug \\
-document.querySelector("#update").addEventListener("click", updateView);
+// document.querySelector("#update").addEventListener("click", updateView);
