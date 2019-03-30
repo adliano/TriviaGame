@@ -41,12 +41,14 @@ getQuestions("easy");
 /*****************************************************************************/
 /* * * * * * * * * * * * * * getCorrectAnswerGIF() * * * * * * * * * * * * * */
 /*****************************************************************************/
-function getCorrectAnswerGIF() {
-    let _url = `https://api.giphy.com/v1/gifs/random?api_key=5txQgNzAKY8UPAGRI78q6WpaFO8ls0Zn&tag=correct answer&rating=G`;
+function getCorrectAnswerGIF(search) {
+    let _url = `https://api.giphy.com/v1/gifs/random?api_key=5txQgNzAKY8UPAGRI78q6WpaFO8ls0Zn&tag=${search}&rating=G`;
     fetch(_url)
         .then((result) => result.json())
         .then((jsonObj) => {
             correctAnswerGifURL = jsonObj.data.images.original.url;
+            console.log(correctAnswerGifURL);
+
         });
 }
 /*****************************************************************************/
@@ -57,7 +59,9 @@ function getWrongAnswerGIF() {
     fetch(_url)
         .then((result) => result.json())
         .then((jsonObj) => {
-            wrongAnswerGifURL = jsonObj.data.images.original.url
+            wrongAnswerGifURL = jsonObj.data.images.original.url;
+            console.log(wrongAnswerGifURL);
+
         });
 }
 /******************************************************************************/
@@ -77,7 +81,22 @@ function noName() {
         document.querySelector("#questionsContainer").classList.remove("invisible");
     });
 }
-
+/*****************************************************************************/
+/* * * * * * * * * * * * * * * mkVisible() * * * * * * * * * * * * * * * * * */
+/*****************************************************************************/
+function mkVisible(...selectors) {
+    for (let selector of selectors) {
+        document.querySelector(selector).classList.remove("invisible");
+    }
+}
+/*******************************************************************************/
+/* * * * * * * * * * * * * * * mkInvisible() * * * * * * * * * * * * * * * * * */
+/*******************************************************************************/
+function mkInvisible(...selectors) {
+    for (let selector of selectors) {
+        document.querySelector(selector).classList.add("invisible");
+    }
+}
 /******************************************************************************/
 /* * * * * * * * * * * * * * * * * * rand() * * * * * * * * * * * * * * * * * */
 /******************************************************************************/
@@ -121,9 +140,9 @@ function stop() {
 
 }
 
-/***************************************************************************/
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 /* * * * * * * * * * * * * * onAnswerClick() * * * * * * * * * * * * * * * */
-/***************************************************************************/
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 // Method to handle event wen user click in any answer
 function onAnswerClick(event) {
     event.preventDefault();
@@ -131,17 +150,24 @@ function onAnswerClick(event) {
     ///////// DEBUG \\\\\\\\\\
     console.log(_btnText);
 
+    mkInvisible("#timerHearder","#question","#btnColumn");
+    mkVisible("#displayGIF");
+    let _imgElement = document.querySelector("#displayGIF").children[0];
+    let _src;
+
     if (_btnText == correctAnswer) {
         console.log(`You got it! ${_btnText} id rith answer`);
         gameInfo.toatlWin++;
         console.log(`Total Guessed : ${gameInfo.toatlWin}`);
-
+        _src = correctAnswerGifURL;
     }
     else {
         console.log(`Wrong!`);
         gameInfo.totalLost++;
         console.log(`Total missed : ${gameInfo.totalLost}`);
+        _src =wrongAnswerGifURL;
     }
+    _imgElement.setAttribute("src",_src);
 }
 
 
@@ -199,8 +225,8 @@ function updateView() {
     }
 
     ////////////////////////////////////////////////////////////////////////////////
-    getCorrectAnswerGIF(correctAnswer);
-    getWrongAnswerGIF(correctAnswer);
+    getCorrectAnswerGIF(`right answer ${correctAnswer}`);
+    getWrongAnswerGIF();
     /////////////////////////////////////////////////////////////////////////////////////
 
     stop();
