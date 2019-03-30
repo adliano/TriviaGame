@@ -121,8 +121,7 @@ function onAnswerClick(event){
     else{
         console.log(`Wrong!`);
         gameInfo.totalLost++;
-        console.log(`Total missed : ${gameInfo.totalLost}`);
-        
+        console.log(`Total missed : ${gameInfo.totalLost}`);   
     }
 }
 
