@@ -1,15 +1,16 @@
 // <!-- Geography -->
-
+// Global Variables \\
 let questionsObjects;
 let questionsKeys;
+let correctAnswerGifURL;
+let wrongAnswerGifURL;
 let correctAnswer;
 // Save interval ID to be able to stop when need it
 var intervalID;
 // Time given to user to answer 30 seconds
 var timerCounter = 30;
 
-let gameInfo = {toatlWin : 0, totalLost : 0 , totalRounds : 0};
-
+let gameInfo = { toatlWin: 0, totalLost: 0, totalRounds: 0 };
 
 //
 /******************************************************************************/
@@ -28,9 +29,6 @@ function getQuestions(difficulty) {
             //
             // Array with Questions keys
             questionsKeys = Object.keys(questionsObjects);
-            //
-            ///////// DEBUG \\\\\\\\\
-            //console.log(questionsKeys);
         })
         // Enable Start Button after data ia loaded
         .then(() => noName())
@@ -40,18 +38,39 @@ function getQuestions(difficulty) {
 
 getQuestions("easy");
 
-
+/*****************************************************************************/
+/* * * * * * * * * * * * * * getCorrectAnswerGIF() * * * * * * * * * * * * * */
+/*****************************************************************************/
+function getCorrectAnswerGIF() {
+    let _url = `https://api.giphy.com/v1/gifs/random?api_key=5txQgNzAKY8UPAGRI78q6WpaFO8ls0Zn&tag=correct answer&rating=G`;
+    fetch(_url)
+        .then((result) => result.json())
+        .then((jsonObj) => {
+            correctAnswerGifURL = jsonObj.data.images.original.url;
+        });
+}
+/*****************************************************************************/
+/* * * * * * * * * * * * * * getWrongAnswerGIF() * * * * * * * * * * * * * * */
+/*****************************************************************************/
+function getWrongAnswerGIF() {
+    let _url = `https://api.giphy.com/v1/gifs/random?api_key=5txQgNzAKY8UPAGRI78q6WpaFO8ls0Zn&tag=wrong answer&rating=G`;
+    fetch(_url)
+        .then((result) => result.json())
+        .then((jsonObj) => {
+            wrongAnswerGifURL = jsonObj.data.images.original.url
+        });
+}
 /******************************************************************************/
 /* * * * * * * * * * * * * * * * * noName() * * * * * * * * * * * * * * * * * */
 /******************************************************************************/
 // TODO: Name this function later
-function noName(){
+function noName() {
     // Get start button element 
     let _btn = document.querySelector("#startButton");
     // Enable the start button
     _btn.disabled = false;
     // Add the event listner
-    _btn.addEventListener("click", function(){
+    _btn.addEventListener("click", function () {
         // remove Start button from view 
         document.querySelector("#containerStart").classList.add("invisible");
         // Add the Question container on view
@@ -99,29 +118,29 @@ function updateTimer() {
 /****************************************************************************/
 function stop() {
     clearInterval(intervalID);
-    
+
 }
 
 /***************************************************************************/
 /* * * * * * * * * * * * * * onAnswerClick() * * * * * * * * * * * * * * * */
 /***************************************************************************/
 // Method to handle event wen user click in any answer
-function onAnswerClick(event){
-    event.preventDefault(); 
+function onAnswerClick(event) {
+    event.preventDefault();
     let _btnText = event.target.innerHTML;
     ///////// DEBUG \\\\\\\\\\
     console.log(_btnText);
 
-    if(_btnText == correctAnswer){
+    if (_btnText == correctAnswer) {
         console.log(`You got it! ${_btnText} id rith answer`);
         gameInfo.toatlWin++;
         console.log(`Total Guessed : ${gameInfo.toatlWin}`);
-        
+
     }
-    else{
+    else {
         console.log(`Wrong!`);
         gameInfo.totalLost++;
-        console.log(`Total missed : ${gameInfo.totalLost}`);   
+        console.log(`Total missed : ${gameInfo.totalLost}`);
     }
 }
 
@@ -133,14 +152,14 @@ document.querySelector("#btnColumn").addEventListener("click", onAnswerClick);//
 let questionButtons = document.querySelector("#btnColumn").children
 // Set onclick event listner for each
 // for (let _btn of questionButtons) {
-    // _btn.addEventListener("click", function (event) {
-        // let _btnText = event.target.innerHTML;
-        /////////// DEBUGGING \\\\\\\\\\\
-        // console.log(_btnText);
-        // console.dir(questionsObjects);
-        // console.log(questionsObjects.results[0].question);
+// _btn.addEventListener("click", function (event) {
+// let _btnText = event.target.innerHTML;
+/////////// DEBUGGING \\\\\\\\\\\
+// console.log(_btnText);
+// console.dir(questionsObjects);
+// console.log(questionsObjects.results[0].question);
 
-    // });
+// });
 // }
 
 
@@ -178,6 +197,11 @@ function updateView() {
         let _question = _obj.incorrect_answers.splice(rand(_obj.incorrect_answers.length), 1)[0];
         _btn.innerHTML = _question;
     }
+
+    ////////////////////////////////////////////////////////////////////////////////
+    getCorrectAnswerGIF(correctAnswer);
+    getWrongAnswerGIF(correctAnswer);
+    /////////////////////////////////////////////////////////////////////////////////////
 
     stop();
     timerCounter = 30;
