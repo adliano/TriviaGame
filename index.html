@@ -1,10 +1,9 @@
 <!doctype html>
 <!-- https://www.youtube.com/watch?v=xhmmiRmxQ8Q&feature=youtu.be -->
-<!-- API Used -->
+<!-- APIs Used -->
 <!-- Geography -->
 <!-- https://opentdb.com/api.php?amount=10&category=22&difficulty=easy&type=multiple -->
 <html lang="en">
-
 <head>
   <title>Trivia Game</title>
   <!-- Required meta tags -->
@@ -17,14 +16,12 @@
   <link href="https://fonts.googleapis.com/css?family=Baloo+Chettan|Luckiest+Guy|Special+Elite" rel="stylesheet">
   <!-- Style.css -->
   <link rel="stylesheet" href="./assets/css/style.css">
-  <!-- Javascript
-    <script src="./assets/javascript/app.js"></script>
-    <script src="./assets/javascript/questions.js"></script> -->
 </head>
-
+<!-- ------------------------------------------------- -->
+<!--         Container with the strat Button           -->
+<!-- ------------------------------------------------- -->
 <body>
   <div id="containerStart" class="container my-5">
-    <!-- TODO: Center Button -->
     <div class="row">
       <div class="col  text-center">
         <div class="h-100"></div>
@@ -32,13 +29,10 @@
         <button id="startButton" class="btn btn-outline-primary px-5 h-100" disabled>Start</button>
         <div class="h-100"></div>
       </div>
-
     </div>
-
   </div>
-
   <!-- ------------------------------------------------- -->
-  <!-- Container with questions and answer Buttons       -->
+  <!--         Container with questions Headers          -->
   <!-- ------------------------------------------------- -->
   <div id="questionsContainer" class="container align-middle text-center my-5 p-5 invisible">
     <h1 id="triviaHeader" class="font-weight-bolder text-primary my-5 py-5">Totally Trivial Trivia</h1>
@@ -46,26 +40,25 @@
     <h2 id="timerHearder" class="my-5">Time Remaining : <span id="timerID" class="w-100 m-1">30</span> Seconds</h2>
 
     <h3 id="question">My Question Here</h3>
-
+    <!-- ------------------------------------------------- -->
+    <!-- Container with questions and answer Buttons       -->
+    <!-- ------------------------------------------------- -->
     <div class="row">
       <div class="col-lg-3"></div>
-      <!-- Div Container holding the Buttons with answers -->
       <div id="btnColumn" class="col-lg-6">
-        <button class="btn btn-outline-dark w-100 m-1">option one</button>
-        <button class="btn btn-outline-dark w-100 m-1">option two</button>
-        <button class="btn btn-outline-dark w-100 m-1">option three</button>
-        <button class="btn btn-outline-dark w-100 m-1">option four</button>
+        <button class="btn btn-outline-dark w-100 m-1"></button>
+        <button class="btn btn-outline-dark w-100 m-1"></button>
+        <button class="btn btn-outline-dark w-100 m-1"></button>
+        <button class="btn btn-outline-dark w-100 m-1"></button>
       </div>
       <!-- Div container to hold the GIF to be display -->
       <div id="displayGIF" class="col-lg-6 invisible">
         <img src="" alt="GIF">
       </div>
-
       <div class="col-lg-3"></div>
-
     </div>
     <!-- <div class="row text-center h-25"> -->
-      <!-- <button id="update" class="btn btn-primary mx-auto my-5">Update</button> -->
+    <!-- <button id="update" class="btn btn-primary mx-auto my-5">Update</button> -->
     <!-- </div> -->
   </div>
 

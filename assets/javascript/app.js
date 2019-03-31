@@ -2,16 +2,20 @@
 // Global Variables \\
 let questionsObjects;
 let questionsKeys;
-let correctAnswerGifURL;
-let wrongAnswerGifURL;
+let correctAnswerGifURL = "https://media.giphy.com/media/Ax0kmy0IEqq9W/giphy.gif";
+let wrongAnswerGifURL = "https://media.giphy.com/media/BPZenX37AtXyw/giphy.gif";
 let correctAnswer;
 // Save interval ID to be able to stop when need it
 var intervalID;
 // Time given to user to answer 30 seconds
 var timerCounter = 30;
 //
-let gameInfo = { toatlWin: 0, totalLost: 0, totalRounds: 0,notAnswered:0 };
+let gameInfo = { toatlWin: 0, totalLost: 0, totalRounds: 0, notAnswered: 0 };
 //
+// FLAGS
+const CORRECT = "correct";
+const WRONG = "wrong";
+const NO_ANSWER = "no answer";
 /******************************************************************************/
 /* * * * * * * * * * * * * * * * getQuestions() * * * * * * * * * * * * * * * */
 /******************************************************************************/
@@ -30,7 +34,7 @@ function getQuestions(difficulty) {
             questionsKeys = Object.keys(questionsObjects);
         })
         // Enable Start Button after data ia loaded
-        .then(() => noName())
+        .then(() => onStartButtonClick())
         // Update view after data arrive
         .then(() => updateView());
 }
@@ -47,10 +51,8 @@ function getCorrectAnswerGIF(search) {
         .then((jsonObj) => {
             correctAnswerGifURL = jsonObj.data.images.original.url;
             console.log(correctAnswerGifURL);
-
         })
         .catch((errmsg) => {
-            correctAnswerGifURL = "https://media.giphy.com/media/Ax0kmy0IEqq9W/giphy.gif";
             console.log(errmsg);
         });
 }
@@ -58,7 +60,7 @@ function getCorrectAnswerGIF(search) {
 /* * * * * * * * * * * * * * getWrongAnswerGIF() * * * * * * * * * * * * * * */
 /*****************************************************************************/
 function getWrongAnswerGIF() {
-    let _url = `https://api.giphy.com/v1/gifs/random?api_key=5txQgNzAKY8UPAGRI78q6WpaFO8ls0Zn&tag=wrong answer&rating=G`;
+    let _url = `https://api.giphy.com/v1/gifs/random?api_key=5txQgNzAKY8UPAGRI78q6WpaFO8ls0Zn&tag=wrong+answer&rating=G`;
     fetch(_url)
         .then((result) => result.json())
         .then((jsonObj) => {
@@ -66,15 +68,14 @@ function getWrongAnswerGIF() {
             console.log(wrongAnswerGifURL);
         })
         .catch((errmsg) => {
-            correctAnswerGifURL = "https://media.giphy.com/media/BPZenX37AtXyw/giphy.gif";
-            console.log(errmsg);  
+            console.log(errmsg);
         });
 }
 /******************************************************************************/
-/* * * * * * * * * * * * * * * * * noName() * * * * * * * * * * * * * * * * * */
+/* * * * * * * * * * * * * * onStartButtonClick() * * * * * * * * * * * * * * */
 /******************************************************************************/
 // TODO: Name this function later
-function noName() {
+function onStartButtonClick() {
     // Get start button element 
     let _btn = document.querySelector("#startButton");
     // Enable the start button
@@ -106,7 +107,7 @@ function mkInvisible(...selectors) {
 /*******************************************************************************/
 /* * * * * * * * * * * * * * * * * setText() * * * * * * * * * * * * * * * * * */
 /*******************************************************************************/
-function setText(selector, text){
+function setText(selector, text) {
     document.querySelector(selector).innerHTML = text;
 }
 /******************************************************************************/
@@ -121,9 +122,9 @@ function rand(range) {
 /******************************************************************************/
 /* * * * * * * * * * * * * * * * startTimer() * * * * * * * * * * * * * * * * */
 /******************************************************************************/
-function startTimer() {
-    clearInterval(intervalID);
-    intervalID = setInterval(updateTimer, 1000);
+function startTimer(callback, seconds = 1) {
+    stop();
+    intervalID = setInterval(callback, 1000 * seconds);
 }
 /*******************************************************************************/
 /* * * * * * * * * * * * * * * * updateTimer() * * * * * * * * * * * * * * * * */
@@ -132,23 +133,66 @@ function updateTimer() {
     // Set Counter to always show two digits
     timerCounter = ("0" + timerCounter).slice(-2);
     // Display Updated conter
-    setText("#timerID",timerCounter);
+    setText("#timerID", timerCounter);
     // Stop if counter reachs zero
     if (timerCounter == 0) {
         gameInfo.notAnswered++;
-
         document.querySelector("#timerID").classList.remove("text-danger");
         stop();
+        showAnwser();
     }
     // Make it red color if counter bellow 10
     else if (timerCounter < 11) {
         document.querySelector("#timerID").classList.add("text-danger");
     }
     // Update Counter
-    timerCounter--;    
+    timerCounter--;
     // TODO: update noAnswered
     // TODO: reset view 
 }
+/***************************************************************************/
+/* * * * * * * * * * * * * * * showAnwser() * * * * * * * * * * * * * * * */
+/***************************************************************************/
+function showAnwser(isCorrect) {
+    // Let user see the result for 5 seconds
+    startTimer(updateView, 5);
+    // remove timerHearder, question and btnColumn from view
+    mkInvisible("#timerHearder", "#btnColumn");
+    //display displayGIF
+    mkVisible("#displayGIF");
+    // Get Element of img, there is only one element child so we most use [0]
+    let _imgElement = document.querySelector("#displayGIF").children[0];
+
+    switch (isCorrect) {
+        case true: // User answered correct
+            // Update toatlWin
+            gameInfo.toatlWin++;
+            // set text for answer status
+            setText("#question", 'You Got IT Right!');
+            // add the src to img
+            _imgElement.setAttribute("src", correctAnswerGifURL);
+            break;
+        case false: // User Missed
+            // update totalLost
+            gameInfo.totalLost++;
+            // set text for answer status
+            setText("#question", `Nope! Right Answer is ${correctAnswer}`);
+            _imgElement.setAttribute("src", wrongAnswerGifURL);
+            break;
+        default: // Not Answer, Time out
+            // Update notAnswered counter
+            gameInfo.notAnswered++;
+            // set text for answer status
+            setText("#question", `Time out! Right Answer is ${correctAnswer}`);
+            _imgElement.setAttribute("src", wrongAnswerGifURL);
+            break;
+    }
+
+}
+
+
+
+
 /****************************************************************************/
 /* * * * * * * * * * * * * * * * * stop() * * * * * * * * * * * * * * * * * */
 /****************************************************************************/
@@ -161,44 +205,10 @@ function stop() {
 // Method to handle event wen user click in any answer
 function onAnswerClick(event) {
     event.preventDefault();
-    // stop current interval
-    clearInterval(intervalID);
-    // get interval ID and set new time interval to 5 seconds
-    intervalID = setInterval(updateView, 1000 * 5);
     // Get text from clicked button
     let _btnText = event.target.innerHTML;
-    // remove timerHearder, question and btnColumn from view
-    mkInvisible("#timerHearder", "#btnColumn");
-    //display displayGIF
-    mkVisible("#displayGIF");
-    // Get Element of img, there is only one element child so we most use [0]
-    let _imgElement = document.querySelector("#displayGIF").children[0];
-    // Variable to hold the src url
-    let _src;
-    // Variable to hold answer status
-    let _answerStatus;
-    // If correct answer
-    if (_btnText == correctAnswer) {
-        // Update toatlWin
-        gameInfo.toatlWin++;
-        // set url
-        _src = correctAnswerGifURL;
-        // Set answer status to correct
-        _answerStatus = "You Got it!";
-    }
-    // If wrong answer
-    else {
-        // update totalLost
-        gameInfo.totalLost++;
-        //set url
-        _src = wrongAnswerGifURL;
-        // Set answer status to wrong
-        _answerStatus = "Nope!";
-    }
-    // set text for answer status
-    setText("#question",_answerStatus);
-    // add the src to img
-    _imgElement.setAttribute("src", _src);
+    // check answer status
+    showAnwser(_btnText == correctAnswer);
 }
 //
 // Add the onclick listener to answers buttons
@@ -213,9 +223,9 @@ document.querySelector("#btnColumn").addEventListener("click", onAnswerClick);
 function updateView() {
     //
     //////////////////////////////////////////////
-    if(questionsKeys.length<1) alert("game over");
+    if (questionsKeys.length < 1) alert("game over");
     ////////////////////////////////////////////////
-    
+    //
     // Get a rand key ussing splice (splice return a Array)
     let _key = questionsKeys.splice(rand(questionsKeys.length), 1);
     ///////// DEBUG \\\\\\\\\
@@ -250,8 +260,8 @@ function updateView() {
     stop();
     // Reset counter
     timerCounter = 30;
-    //Start timer
-    startTimer();
+    //Start timer and update each 1 second
+    startTimer(updateTimer, 1);
 }
 // Button use to debug \\
 // document.querySelector("#update").addEventListener("click", updateView);
