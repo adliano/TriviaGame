@@ -10,7 +10,7 @@ var intervalID;
 // Time given to user to answer 30 seconds
 var timerCounter = 30;
 //
-let gameInfo = { toatlWin: 0, totalLost: 0, totalRounds: 0 };
+let gameInfo = { toatlWin: 0, totalLost: 0, totalRounds: 0,notAnswered:0 };
 //
 /******************************************************************************/
 /* * * * * * * * * * * * * * * * getQuestions() * * * * * * * * * * * * * * * */
@@ -135,16 +135,17 @@ function updateTimer() {
     setText("#timerID",timerCounter);
     // Stop if counter reachs zero
     if (timerCounter == 0) {
-        stop()
+        gameInfo.notAnswered++;
+
         document.querySelector("#timerID").classList.remove("text-danger");
+        stop();
     }
     // Make it red color if counter bellow 10
     else if (timerCounter < 11) {
         document.querySelector("#timerID").classList.add("text-danger");
     }
     // Update Counter
-    timerCounter--;
-    // TODO: check if timer == 0 
+    timerCounter--;    
     // TODO: update noAnswered
     // TODO: reset view 
 }
@@ -162,7 +163,7 @@ function onAnswerClick(event) {
     event.preventDefault();
     // stop current interval
     clearInterval(intervalID);
-    // get interval ID
+    // get interval ID and set new time interval to 5 seconds
     intervalID = setInterval(updateView, 1000 * 5);
     // Get text from clicked button
     let _btnText = event.target.innerHTML;
@@ -170,7 +171,7 @@ function onAnswerClick(event) {
     mkInvisible("#timerHearder", "#btnColumn");
     //display displayGIF
     mkVisible("#displayGIF");
-    // Get Element image
+    // Get Element of img, there is only one element child so we most use [0]
     let _imgElement = document.querySelector("#displayGIF").children[0];
     // Variable to hold the src url
     let _src;
@@ -210,6 +211,11 @@ document.querySelector("#btnColumn").addEventListener("click", onAnswerClick);
 // this function will return the correct_answer 
 // to compare with user answer
 function updateView() {
+    //
+    //////////////////////////////////////////////
+    if(questionsKeys.length<1) alert("game over");
+    ////////////////////////////////////////////////
+    
     // Get a rand key ussing splice (splice return a Array)
     let _key = questionsKeys.splice(rand(questionsKeys.length), 1);
     ///////// DEBUG \\\\\\\\\
