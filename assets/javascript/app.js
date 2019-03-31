@@ -1,4 +1,3 @@
-// <!-- Geography -->
 // Global Variables \\
 let questionsObjects;
 let questionsKeys;
@@ -9,13 +8,8 @@ let correctAnswer;
 var intervalID;
 // Time given to user to answer 30 seconds
 var timerCounter = 30;
-//
 let gameInfo = { toatlWin: 0, totalLost: 0, totalRounds: 0, notAnswered: 0 };
-//
-// FLAGS
-const CORRECT = "correct";
-const WRONG = "wrong";
-const NO_ANSWER = "no answer";
+
 /******************************************************************************/
 /* * * * * * * * * * * * * * * * getQuestions() * * * * * * * * * * * * * * * */
 /******************************************************************************/
@@ -38,9 +32,6 @@ function getQuestions(difficulty) {
         // Update view after data arrive
         .then(() => updateView());
 }
-//
-getQuestions("easy");
-//
 /*****************************************************************************/
 /* * * * * * * * * * * * * * getCorrectAnswerGIF() * * * * * * * * * * * * * */
 /*****************************************************************************/
@@ -70,23 +61,6 @@ function getWrongAnswerGIF() {
         .catch((errmsg) => {
             console.log(errmsg);
         });
-}
-/******************************************************************************/
-/* * * * * * * * * * * * * * onStartButtonClick() * * * * * * * * * * * * * * */
-/******************************************************************************/
-// TODO: Name this function later
-function onStartButtonClick() {
-    // Get start button element 
-    let _btn = document.querySelector("#startButton");
-    // Enable the start button
-    _btn.disabled = false;
-    // Add the event listner
-    _btn.addEventListener("click", function () {
-        // remove Start button from view 
-        mkInvisible("#containerStart");
-        // Add the Question container on view
-        mkVisible("#questionsContainer");
-    });
 }
 /*****************************************************************************/
 /* * * * * * * * * * * * * * * mkVisible() * * * * * * * * * * * * * * * * * */
@@ -126,6 +100,12 @@ function startTimer(callback, seconds = 1) {
     stop();
     intervalID = setInterval(callback, 1000 * seconds);
 }
+/****************************************************************************/
+/* * * * * * * * * * * * * * * * * stop() * * * * * * * * * * * * * * * * * */
+/****************************************************************************/
+function stop() {
+    clearInterval(intervalID);
+}
 /*******************************************************************************/
 /* * * * * * * * * * * * * * * * updateTimer() * * * * * * * * * * * * * * * * */
 /*******************************************************************************/
@@ -136,7 +116,6 @@ function updateTimer() {
     setText("#timerID", timerCounter);
     // Stop if counter reachs zero
     if (timerCounter == 0) {
-        gameInfo.notAnswered++;
         document.querySelector("#timerID").classList.remove("text-danger");
         stop();
         showAnwser();
@@ -147,8 +126,6 @@ function updateTimer() {
     }
     // Update Counter
     timerCounter--;
-    // TODO: update noAnswered
-    // TODO: reset view 
 }
 /***************************************************************************/
 /* * * * * * * * * * * * * * * showAnwser() * * * * * * * * * * * * * * * */
@@ -162,7 +139,7 @@ function showAnwser(isCorrect) {
     mkVisible("#displayGIF");
     // Get Element of img, there is only one element child so we most use [0]
     let _imgElement = document.querySelector("#displayGIF").children[0];
-
+    // Check if user answer correct,wrong or timeout
     switch (isCorrect) {
         case true: // User answered correct
             // Update toatlWin
@@ -187,50 +164,28 @@ function showAnwser(isCorrect) {
             _imgElement.setAttribute("src", wrongAnswerGifURL);
             break;
     }
-
-}
-
-
-
-
-/****************************************************************************/
-/* * * * * * * * * * * * * * * * * stop() * * * * * * * * * * * * * * * * * */
-/****************************************************************************/
-function stop() {
-    clearInterval(intervalID);
-}
-/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
-/* * * * * * * * * * * * * * onAnswerClick() * * * * * * * * * * * * * * * */
-/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
-// Method to handle event wen user click in any answer
-function onAnswerClick(event) {
-    event.preventDefault();
-    // Get text from clicked button
-    let _btnText = event.target.innerHTML;
-    // check answer status
-    showAnwser(_btnText == correctAnswer);
 }
 //
-// Add the onclick listener to answers buttons
-document.querySelector("#btnColumn").addEventListener("click", onAnswerClick);
-//
-/* ********************************************** */
-/* * * * * * * * * * updateView() * * * * * * * * */
-/* ********************************************** */
+/* ********************************************************************** */
+/* * * * * * * * * * * * * * * * updateView() * * * * * * * * * * * * * * */
+/* ********************************************************************** */
 // Fubction used to update view with new question
 // this function will return the correct_answer 
 // to compare with user answer
 function updateView() {
-    //
-    //////////////////////////////////////////////
-    if (questionsKeys.length < 1) alert("game over");
-    ////////////////////////////////////////////////
-    //
+    // Check for Game Over
+    if (questionsKeys.length < 1) {
+        stop();
+        mkInvisible("#questionsContainer");
+        setText("#correctAnswersCount", gameInfo.toatlWin);
+        setText("#wrongAnswersCount", gameInfo.totalLost);
+        setText("#noAnswersCount", gameInfo.notAnswered);
+        mkVisible("#gameOverContainer");
+
+        return;
+    }
     // Get a rand key ussing splice (splice return a Array)
     let _key = questionsKeys.splice(rand(questionsKeys.length), 1);
-    ///////// DEBUG \\\\\\\\\
-    console.log(`%c current key : ${_key[0]}`, 'background-color: red;');
-    //
     // Get randon object from questionsObjects using splice to void erpetitive questions
     let _obj = questionsObjects[_key[0]];
     // Get string question
@@ -259,9 +214,59 @@ function updateView() {
     // Stop timer
     stop();
     // Reset counter
-    timerCounter = 30;
+    // timerCounter = 30;
+    timerCounter = 10; ///////////////////////////////////////////////////////////////
     //Start timer and update each 1 second
     startTimer(updateTimer, 1);
 }
-// Button use to debug \\
-// document.querySelector("#update").addEventListener("click", updateView);
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+/* * * * * * * * * * * * * * onStartButtonClick() * * * * * * * * * * * * * * */
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+function onStartButtonClick() {
+    // Get start button element 
+    let _btn = document.querySelector("#startButton");
+    // Enable the start button
+    _btn.disabled = false;
+    // Add the event listner
+    _btn.addEventListener("click", function () {
+        // remove Start button from view 
+        mkInvisible("#containerStart");
+        // Add the Question container on view
+        mkVisible("#questionsContainer");
+    });
+}
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+/* * * * * * * * * * * * * * onAnswerClick() * * * * * * * * * * * * * * * */
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+// Method to handle event wen user click in any answer
+function onAnswerClick(event) {
+    event.preventDefault();
+    // Get text from clicked button
+    let _btnText = event.target.innerHTML;
+    // check answer status
+    showAnwser(_btnText == correctAnswer);
+}
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+/* * * * * * * * * * * * * * onReloadClick() * * * * * * * * * * * * * * * */
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+// Method to handle the game reload
+function onReloadClick(event) {
+    mkInvisible("#gameOverContainer");
+    for (let key of Object.keys(gameInfo)) {
+        gameInfo[key] = 0;
+    }
+    mkVisible("#containerStart");
+    // Get start button element 
+    let _btn = document.querySelector("#startButton");
+    // Enable the start button
+    _btn.disabled = false;
+    getQuestions("easy");
+}
+
+document.querySelector("#reloadButton").addEventListener("click", onReloadClick);
+
+// Add the onclick listener to answers buttons
+document.querySelector("#btnColumn").addEventListener("click", onAnswerClick);
+//
+getQuestions("easy");
+
